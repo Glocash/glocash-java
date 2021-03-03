@@ -2,6 +2,7 @@
     pageEncoding="utf-8"%>
 
 <%
+
 /**
  * 经典模式
  * 技术联系人 jiongqiang 156038530@qq.com
@@ -9,7 +10,6 @@
  * 商户后台 https://portal.glocash.com/merchant/index/login
  *
  */
-
 /**
  * 信用卡测试卡 其他apm支付需自己测试
  *   Visa | 4907639999990022 | 12/2020 | 029 paid
@@ -23,51 +23,43 @@
  *
  *  想测试失败 可以填错年月日或者ccv即可
  */
-
 //TODO 请仔细查看TODO的注释 请仔细查看TODO的注释 请仔细查看TODO的注释
 
-String sandbox_url = "https://sandbox.glocash.com/gateway/payment/index"; //测试地址
-String live_url    = "https://pay.glocash.com/gateway/payment/index"; //正式地址
+//具体的域名需要咨询技术
+String sandbox_url = "https://sandbox.glocashpayment.com/gateway/payment/index"; //测试地址
+String live_url    = "https://pay.glocashpayment.com/gateway/payment/index"; //正式地址
 
 //秘钥 测试地址请用测试秘钥 正式地址用正式秘钥 请登录商户后台查看
 String sandbox_key = ""; //TODO 测试秘钥 商户后台查看
 String live_key = ""; //TODO 正式秘钥 商户后台查看(必须材料通过以后才能使用)
-
 long timeStampSec = System.currentTimeMillis()/1000;
 String timestamp = String.format("%010d", timeStampSec);
-
 String timetemp = new java.text.SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date(timeStampSec * 1000));
 String timetemp2 = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date(timeStampSec * 1000));
-
 java.util.Random rand = new java.util.Random();
-
 //支付参数
 java.util.Map<String, String> data = new java.util.HashMap<String, String>();
-data.put("REQ_SANDBOX", "0");  //TODO 是否开启测试模式 注意秘钥是否对应
+data.put("REQ_SANDBOX", "1");  //TODO 是否开启测试模式 注意秘钥是否对应
 data.put("REQ_EMAIL", "rongjiang.chen@witsion.com");    //TODO 需要换成自己的 商户邮箱 商户后台申请的邮箱
 data.put("REQ_TIMES", timestamp);    //请求时间
 data.put("REQ_INVOICE", "TEST"+timetemp+rand.nextInt(1000)+9000);    //订单号
-data.put("BIL_METHOD", "L01");    //请求方式
+data.put("BIL_METHOD", "C01");    //请求方式
 data.put("CUS_EMAIL", "rongjiang.chen@witsion.com");    //客户邮箱
 data.put("BIL_PRICE", "0.1");    //价格
 data.put("BIL_CURRENCY", "USD");    //币种
-data.put("BIL_CC3DS", "0");    //是否开启3ds 1 开启 0 不开启
+data.put("BIL_CC3DS", "1");    //是否开启3ds 1 开启 0 不开启
 data.put("URL_SUCCESS", "http://hs.crjblog.cn/success.php");    //支付成功跳转页面
 data.put("URL_FAILED", "http://hs.crjblog.cn/failed.php");    //支付失败跳转页面
 data.put("URL_NOTIFY", "http://hs.crjblog.cn/notify.php");    //异步回调跳转页面
-
 //$data['BIL_PRCCODE']  = 0; //电话支付相关参数 信用卡不需要填写
 //更多支付参数请参考文档 经典模式->附录2：付款请求参数表
 //签名
 String url = data.get("REQ_SANDBOX")=="1"?sandbox_url:live_url;//根据REQ_SANDBOX调整地址
 String key = data.get("REQ_SANDBOX")=="1"?sandbox_key:live_key;//根据REQ_SANDBOX调整秘钥
-
 String reg_sign=key+data.get("REQ_TIMES")+data.get("REQ_EMAIL")+data.get("REQ_INVOICE")+data.get("CUS_EMAIL")+data.get("BIL_METHOD")+data.get("BIL_PRICE")+data.get("BIL_CURRENCY");
 data.put("REQ_SIGN", getSHA256StrJava(reg_sign));
-
 java.io.File file = new java.io.File("");
 String filePath = file.getCanonicalPath();
-
 try{
 	java.io.File files =new java.io.File(filePath+"\\ccDirect.log");
 	java.io.Writer outfile =new java.io.FileWriter(files,true);
@@ -86,8 +78,8 @@ try{
     param=param.substring(0,param.length()-1);
     
     String result=sendPost(url, param);
+    out.println(result);
     com.alibaba.fastjson.JSONObject parseData = com.alibaba.fastjson.JSONObject.parseObject(result);
-	
     if(parseData.getString("REQ_ERROR")!=null){
 		out.println("<pre>");
 		for(String keystr:parseData.keySet()){
@@ -122,7 +114,6 @@ catch(Exception e){
 	out.println(e.getMessage());
     out.println("</pre>");
 }
-
 %>
 
 
@@ -166,6 +157,9 @@ public String sendPost(String url, String param) {
         // 发送POST请求必须设置如下两行
         conn.setDoOutput(true);
         conn.setDoInput(true);
+        
+        conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)"); 
+        
         //获取URLConnection对象对应的输出流
         out = new java.io.PrintWriter(conn.getOutputStream());
         // 发送请求参数
