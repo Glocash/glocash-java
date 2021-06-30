@@ -4,9 +4,9 @@
 <%
 /**
  * 直连模式
- * 技术联系人 jiongqiang 156038530@qq.com
- * 文档地址 https://portal.glocash.com/merchant/index/document
- * 商户后台 https://portal.glocash.com/merchant/index/login
+ * 技术联系人 陈荣江 17602115638 微信同号
+ * 文档地址 https://docs.glocash.com/
+ * 商户后台 https://portal.glocashpayment.com/#/login
  *
  */
 
@@ -26,12 +26,12 @@
 
 //TODO 请仔细查看TODO的注释 请仔细查看TODO的注释 请仔细查看TODO的注释
 
-String sandbox_url = "https://sandbox.glocash.com/gateway/payment/ccDirect"; //测试地址
-String live_url    = "http://pay.v2gc.test/gateway/payment/ccDirect"; //正式地址
+String sandbox_url = "https://sandbox.glocashpayment.com/gateway/payment/ccDirect"; //测试地址
+String live_url    = "https://pay.glocashpayment.com/gateway/payment/ccDirect"; //正式地址
 
 //秘钥 测试地址请用测试秘钥 正式地址用正式秘钥 请登录商户后台查看
-String sandbox_key = "85f89b981e120f601f6f9fcd65*********8a0b2eee937f48ad3e9b57bf67d9e"; //TODO 测试秘钥 商户后台查看
-String live_key = "776cecacb325b2e8e9d5e2dea122*********e6cd22d40e25935e64cb8a90da7"; //TODO 正式秘钥 商户后台查看(必须材料通过以后才能使用)
+String sandbox_key = ""; //TODO 测试秘钥 商户后台查看
+String live_key = ""; //TODO 正式秘钥 商户后台查看(必须材料通过以后才能使用)
 
 long timeStampSec = System.currentTimeMillis()/1000;
 String timestamp = String.format("%010d", timeStampSec);
@@ -43,13 +43,14 @@ java.util.Random rand = new java.util.Random();
 
 //支付参数
 java.util.Map<String, String> data = new java.util.HashMap<String, String>();
-data.put("REQ_SANDBOX", "0");  //TODO 是否开启测试模式 注意秘钥是否对应
+data.put("REQ_SANDBOX", "1");  //TODO 是否开启测试模式 0 正式环境 1 测试环境
 data.put("REQ_EMAIL", "rongjiang.chen@witsion.com");    //TODO 需要换成自己的 商户邮箱 商户后台申请的邮箱
 data.put("REQ_TIMES", timestamp);    //请求时间
 data.put("REQ_INVOICE", "TEST"+timetemp+rand.nextInt(1000)+9000);    //订单号
-data.put("BIL_METHOD", "C01");    //请求方式
+data.put("REQ_MERCHANT", "Merchant Name");  //商户名
 data.put("CUS_EMAIL", "rongjiang.chen@witsion.com");    //客户邮箱
-data.put("BIL_PRICE", "0.1");    //价格
+data.put("BIL_METHOD", "C01");    //请求方式
+data.put("BIL_PRICE", "1");    //价格
 data.put("BIL_CURRENCY", "USD");    //币种
 data.put("BIL_CC3DS", "1");    //是否开启3ds 1 开启 0 不开启
 data.put("URL_SUCCESS", "http://hs.crjblog.cn/success.php");    //支付成功跳转页面
@@ -57,13 +58,14 @@ data.put("URL_FAILED", "http://hs.crjblog.cn/failed.php");    //支付失败跳�
 data.put("URL_NOTIFY", "http://hs.crjblog.cn/notify.php");    //异步回调跳转页面
 
 java.util.Map<String, String> card = new java.util.HashMap<String, String>();
-card.put("BIL_CCNUMBER", "5546989999990033");    //信用卡卡号
-card.put("BIL_CCHOLDER", "zuochengdong");    //信用卡持卡人姓名
-card.put("BIL_CCEXPM", "01");    //信用卡过期月份
+card.put("BIL_CCNUMBER", "4000000000000002");    //信用卡卡号
+card.put("BIL_CCHOLDER", "john smith");    //信用卡持卡人姓名
+card.put("BIL_CCEXPM", "04");    //信用卡过期月份
 card.put("BIL_CCEXPY", "2022");    //信用卡过期年份
-card.put("BIL_CCCVV2", "1234");    //信用卡CVV2码
+card.put("BIL_CCCVV2", "123");    //信用卡CVV2码
 card.put("BIL_IPADDR", "58.247.45.36");    //付款人IP
-card.put("BIL_GOODSNAME", "iphone xs ");    //商品名称或描述
+card.put("BIL_GOODSNAME", "#gold#Runescape/OSRS Old School/ 10M Gold");    //TODO 商品名称必填 而且必须是正确的否则无法结算
+card.put("BIL_GOODS_URL", "https://www.merchant.com/goods/30");    //买家购买商户的链接
 
 //更多支付参数请参考文档 经典模式->附录2：付款请求参数表
 //签名
@@ -184,6 +186,9 @@ public String sendPost(String url, String param) {
         // 发送POST请求必须设置如下两行
         conn.setDoOutput(true);
         conn.setDoInput(true);
+
+        conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+
         //获取URLConnection对象对应的输出流
         out = new java.io.PrintWriter(conn.getOutputStream());
         // 发送请求参数

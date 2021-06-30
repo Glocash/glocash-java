@@ -10,8 +10,8 @@ glocash-java
 GLOCASH Java
 
 
-技术联系人 jiongqiang 156038530@qq.com
+技术联系人 陈荣江 17602115638 微信同号
 
-文档地址 https://portal.glocash.com/merchant/index/document
+文档地址 https://docs.glocash.com/
 
-商户后台 https://portal.glocash.com/merchant/index/login
+商户后台 https://portal.glocashpayment.com/#/login

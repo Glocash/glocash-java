@@ -5,9 +5,9 @@
 
 /**
  * 经典模式
- * 技术联系人 jiongqiang 156038530@qq.com
- * 文档地址 https://portal.glocash.com/merchant/index/document
- * 商户后台 https://portal.glocash.com/merchant/index/login
+ * 技术联系人 陈荣江 17602115638 微信同号
+ * 文档地址 https://docs.glocash.com/
+ * 商户后台 https://portal.glocashpayment.com/#/login
  *
  */
 /**
@@ -39,19 +39,20 @@ String timetemp2 = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(
 java.util.Random rand = new java.util.Random();
 //支付参数
 java.util.Map<String, String> data = new java.util.HashMap<String, String>();
-data.put("REQ_SANDBOX", "1");  //TODO 是否开启测试模式 注意秘钥是否对应
+data.put("REQ_SANDBOX", "1");  //TODO 是否开启测试模式 0 正式环境 1 测试环境
 data.put("REQ_EMAIL", "rongjiang.chen@witsion.com");    //TODO 需要换成自己的 商户邮箱 商户后台申请的邮箱
 data.put("REQ_TIMES", timestamp);    //请求时间
 data.put("REQ_INVOICE", "TEST"+timetemp+rand.nextInt(1000)+9000);    //订单号
-data.put("BIL_METHOD", "C01");    //请求方式
+data.put("REQ_MERCHANT", "Merchant Name"); //商户名
 data.put("CUS_EMAIL", "rongjiang.chen@witsion.com");    //客户邮箱
-data.put("BIL_PRICE", "0.1");    //价格
+data.put("BIL_METHOD", "C01");    //请求方式
+data.put("BIL_GOODSNAME", "#gold#Runescape/OSRS Old School/ 10M Gold");  //TODO 商品名称必填 而且必须是正确的否则无法结算
+data.put("BIL_PRICE", "1");    //价格
 data.put("BIL_CURRENCY", "USD");    //币种
 data.put("BIL_CC3DS", "1");    //是否开启3ds 1 开启 0 不开启
 data.put("URL_SUCCESS", "http://hs.crjblog.cn/success.php");    //支付成功跳转页面
 data.put("URL_FAILED", "http://hs.crjblog.cn/failed.php");    //支付失败跳转页面
 data.put("URL_NOTIFY", "http://hs.crjblog.cn/notify.php");    //异步回调跳转页面
-//$data['BIL_PRCCODE']  = 0; //电话支付相关参数 信用卡不需要填写
 //更多支付参数请参考文档 经典模式->附录2：付款请求参数表
 //签名
 String url = data.get("REQ_SANDBOX")=="1"?sandbox_url:live_url;//根据REQ_SANDBOX调整地址
