@@ -48,6 +48,7 @@ data.put("REQ_EMAIL", "rongjiang.chen@witsion.com");    //TODO 需要换成自�
 data.put("REQ_TIMES", timestamp);    //请求时间
 data.put("REQ_INVOICE", "TEST"+timetemp+rand.nextInt(1000)+9000);    //订单号
 data.put("REQ_MERCHANT", "Merchant Name");  //商户名
+data.put("REQ_APPID", "380");  //应用ID
 data.put("CUS_EMAIL", "rongjiang.chen@witsion.com");    //客户邮箱
 data.put("BIL_METHOD", "C01");    //请求方式
 data.put("BIL_PRICE", "1");    //价格
